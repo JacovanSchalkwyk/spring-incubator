@@ -1,13 +1,17 @@
 package entelect.training.incubator.spring.booking.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import entelect.training.incubator.spring.booking.model.Booking;
 import entelect.training.incubator.spring.booking.model.BookingRequest;
 import entelect.training.incubator.spring.booking.model.BookingResponse;
+import entelect.training.incubator.spring.booking.model.Customer;
 import entelect.training.incubator.spring.booking.repository.BookingRepository;
 
 import java.io.IOException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
+
+import entelect.training.incubator.spring.notification.sms.client.Producer;
 import org.springframework.stereotype.Service;
 
 import java.net.URI;
@@ -24,7 +28,8 @@ public class BookingService {
     }
 
     public BookingResponse createBooking(BookingRequest bookingRequest) {
-        if (!apiCustomerExists(bookingRequest.getCustomerId())) {
+        Customer customer = apiGetCustomer(bookingRequest.getCustomerId());
+        if (customer == null) {
             throw new RuntimeException("Customer does not exist");
         }
 
@@ -35,6 +40,7 @@ public class BookingService {
         Booking booking = mapBookingRequestToBooking(bookingRequest);
         booking.setReferenceNumber("ABC" + (int) (Math.random() * 9000 + 1000));
         bookingRepository.save(booking);
+        // TODO call notification service to send SMS
         return mapBookingToBookingResponse(booking);
     }
 
@@ -62,21 +68,25 @@ public class BookingService {
         return booking;
     }
 
-    private boolean apiCustomerExists(Integer customerId) {
+    private Customer apiGetCustomer(Integer customerId) {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create("http://localhost:8202/customers/" + customerId))
                 .GET()
                 .header("Authorization", "Basic " + java.util.Base64.getEncoder().encodeToString("admin:is_a_lie".getBytes()))
+                .header("Accept", "application/json")
                 .build();
         try {
             HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
             if (response.statusCode() == 200) {
-                return true;
+                ObjectMapper objectMapper = new ObjectMapper(); // or use any other JSON library
+                Customer customer = objectMapper.readValue(response.body(), Customer.class);
+                return customer;
             }
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
-        return false;
+        return null;
+
     }
 
     private boolean apiFlightExists(Integer flightId) {
