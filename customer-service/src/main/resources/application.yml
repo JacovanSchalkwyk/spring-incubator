@@ -11,6 +11,6 @@ spring:
       ddl-auto: create
 
 server:
-  port: 8201
+  port: 8202
   error:
     include-message: always

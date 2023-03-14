@@ -32,6 +32,13 @@ public class FlightsService {
 
     public FlightsService(FlightRepository flightRepository) {
         this.flightRepository = flightRepository;
+        Flight flight = new Flight();
+        flight.setDepartureTime(LocalDateTime.now().plusDays(1));
+        flight.setArrivalTime(LocalDateTime.now().plusDays(1).plusHours(2));
+        flight.setOrigin("JNB");
+        flight.setDestination("CPT");
+        flight.setSeatCost(1000.00f);
+        flightRepository.save(flight);
     }
 
     public Flight createFlight(Flight flight) {

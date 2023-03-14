@@ -16,6 +16,13 @@ public class CustomersService {
 
     public CustomersService(CustomerRepository customerRepository) {
         this.customerRepository = customerRepository;
+        Customer customer = new Customer();
+        customer.setFirstName("John");
+        customer.setLastName("Doe");
+        customer.setPassportNumber("123456789");
+        customer.setEmail("johndoe@gmail.com");
+        customer.setPhoneNumber("0123456789");
+        customerRepository.save(customer);
     }
 
     public Customer createCustomer(Customer customer) {
