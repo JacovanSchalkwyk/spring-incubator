@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.net.URI;
 import java.net.http.HttpResponse;
+import java.util.List;
 
 @Service
 public class BookingService {
@@ -35,6 +36,15 @@ public class BookingService {
         booking.setReferenceNumber("ABC" + (int) (Math.random() * 9000 + 1000));
         bookingRepository.save(booking);
         return mapBookingToBookingResponse(booking);
+    }
+
+
+    public BookingResponse getBookingById(Integer id) {
+        Booking booking = bookingRepository.findById(id).orElse(null);
+        if (booking != null) {
+            return mapBookingToBookingResponse(booking);
+        }
+        return null;
     }
 
     private BookingResponse mapBookingToBookingResponse(Booking booking) {
@@ -85,5 +95,13 @@ public class BookingService {
             e.printStackTrace();
         }
         return false;
+    }
+
+    public List<Booking> getBookingsByCustomerId(Integer customerId) {
+        return bookingRepository.findByCustomerId(customerId);
+    }
+
+    public Booking getBookingsByReference(String reference) {
+        return bookingRepository.findByReferenceNumber(reference);
     }
 }

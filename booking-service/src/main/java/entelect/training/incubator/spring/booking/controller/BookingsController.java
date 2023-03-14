@@ -1,8 +1,6 @@
 package entelect.training.incubator.spring.booking.controller;
 
-import entelect.training.incubator.spring.booking.model.Booking;
-import entelect.training.incubator.spring.booking.model.BookingRequest;
-import entelect.training.incubator.spring.booking.model.BookingResponse;
+import entelect.training.incubator.spring.booking.model.*;
 import entelect.training.incubator.spring.booking.service.BookingService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,45 +36,30 @@ public class BookingsController {
         }
     }
 
-//    @GetMapping
-//    public ResponseEntity<?> getCustomers() {
-//        LOGGER.info("Fetching all customers");
-//        List<Booking> customers = customersService.getCustomers();
-//
-//        if (!customers.isEmpty()) {
-//            LOGGER.trace("Found customers");
-//            return new ResponseEntity<>(customers, HttpStatus.OK);
-//        }
-//
-//        LOGGER.info("No customers could be found");
-//        return ResponseEntity.notFound().build();
-//    }
-//
-//    @GetMapping("{id}")
-//    public ResponseEntity<?> getCustomerById(@PathVariable Integer id) {
-//        LOGGER.info("Processing customer search request for customer id={}", id);
-//        Booking customer = this.customersService.getCustomer(id);
-//
-//        if (customer != null) {
-//            LOGGER.trace("Found customer");
-//            return new ResponseEntity<>(customer, HttpStatus.OK);
-//        }
-//
-//        LOGGER.trace("Customer not found");
-//        return ResponseEntity.notFound().build();
-//    }
-//
-//    @PostMapping("/search")
-//    public ResponseEntity<?> searchCustomers(@RequestBody CustomerSearchRequest searchRequest) {
-//        LOGGER.info("Processing customer search request for request {}", searchRequest);
-//
-//        Booking customer = customersService.searchCustomers(searchRequest);
-//
-//        if (customer != null) {
-//            return ResponseEntity.ok(customer);
-//        }
-//
-//        LOGGER.trace("Customer not found");
-//        return ResponseEntity.notFound().build();
-//    }
+    @GetMapping("{id}")
+    public ResponseEntity<BookingResponse> getBookingById(@PathVariable Integer id) {
+        LOGGER.info("Processing get booking by id request for id={}", id);
+
+        final BookingResponse booking = bookingsService.getBookingById(id);
+        if (booking == null) {
+            LOGGER.error("Booking not found");
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        LOGGER.info("Booking found");
+        return new ResponseEntity<>(booking, HttpStatus.OK);
+    }
+
+    @PostMapping("search/customerId")
+    public ResponseEntity<List<Booking>> getBookingsByCustomerId(@RequestBody BookingsSearchByCustomerRequest customer) {
+        LOGGER.info("Processing get bookings by customer id request for customerId={}", customer.getCustomerId());
+        final List<Booking> bookings = bookingsService.getBookingsByCustomerId(customer.getCustomerId());
+        return new ResponseEntity<>(bookings, HttpStatus.OK);
+    }
+
+    @PostMapping("search/reference")
+    public ResponseEntity<Booking> getBookingsByReferenceId(@RequestBody BookingsSearchByReferenceRequest customer) {
+        LOGGER.info("Processing get bookings by reference id request for referenceId={}", customer.getReferenceNumber());
+        final Booking bookings = bookingsService.getBookingsByReference(customer.getReferenceNumber());
+        return new ResponseEntity<>(bookings, HttpStatus.OK);
+    }
 }
