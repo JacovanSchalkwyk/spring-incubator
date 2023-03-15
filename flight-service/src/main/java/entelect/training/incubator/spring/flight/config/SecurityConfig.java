@@ -37,6 +37,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers(HttpMethod.GET, "/flights/specials").hasAnyRole("SYSTEM", "ADMIN",
                         "LOYALTY_USER")
+                .antMatchers(HttpMethod.GET, "/v3/api-docs/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/flights/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/notification/**").hasAnyRole("SYSTEM", "ADMIN")
                 .antMatchers(HttpMethod.POST, "/flights").hasAnyRole("SYSTEM", "ADMIN")

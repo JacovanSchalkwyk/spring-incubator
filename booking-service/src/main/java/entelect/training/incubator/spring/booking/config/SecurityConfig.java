@@ -36,6 +36,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable() // !!! Disclaimer: NEVER DISABLE CSRF IN PRODUCTION !!!
                 .authorizeRequests()
                 .antMatchers(HttpMethod.GET, "/bookings/**").hasAnyRole("USER", "ADMIN")
+                .antMatchers(HttpMethod.GET, "/v3/api-docs/**").permitAll()
                 .antMatchers(HttpMethod.POST, "/bookings").hasAnyRole("SYSTEM", "ADMIN", "USER")
                 .antMatchers(HttpMethod.POST, "/bookings/**").hasAnyRole("SYSTEM", "ADMIN")
                 .anyRequest().denyAll()
