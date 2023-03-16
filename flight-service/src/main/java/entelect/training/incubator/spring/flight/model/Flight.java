@@ -1,17 +1,18 @@
 package entelect.training.incubator.spring.flight.model;
 
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Data
 @NoArgsConstructor
 @Entity
+@Getter
+@Setter
 public class Flight {
     
     @Id
@@ -21,7 +22,7 @@ public class Flight {
     private String flightNumber;
 
     private String origin;
-
+    @Column(name = "destination")
     private String destination;
     
     private LocalDateTime departureTime;

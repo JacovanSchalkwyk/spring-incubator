@@ -20,4 +20,10 @@ public interface FlightRepository extends CrudRepository<Flight, Integer> {
     
     @Query(value = "select f from Flight f where f.departureTime > :departureFrom and f.departureTime <= :departureTo")
     List<Flight> findByDepartureTimeBetweenDates(@Param("departureFrom") LocalDateTime departureFrom, LocalDateTime departureTo);
+
+    @Query(value = "select distinct f.origin from Flight f order by f.origin")
+    List<String> findDistinctDestination();
+
+    @Query (value = "select distinct f.destination from Flight f order by f.destination")
+    List<String> findDistinctOrigin();
 }

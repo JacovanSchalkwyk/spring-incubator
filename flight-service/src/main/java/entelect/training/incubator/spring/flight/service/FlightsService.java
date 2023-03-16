@@ -39,6 +39,15 @@ public class FlightsService {
         flight.setArrivalTime(LocalDateTime.now().plusDays(1).plusHours(2));
         flight.setOrigin("JNB");
         flight.setDestination("CPT");
+        flight.setSeatsAvailable(4);
+        flight.setSeatCost(1000.00f);
+        flightRepository.save(flight);
+        flight = new Flight();
+        flight.setDepartureTime(LocalDateTime.now().plusDays(1));
+        flight.setArrivalTime(LocalDateTime.now().plusDays(1).plusHours(2));
+        flight.setOrigin("CPT");
+        flight.setDestination("JNB");
+        flight.setSeatsAvailable(5);
         flight.setSeatCost(1000.00f);
         flightRepository.save(flight);
     }
@@ -64,7 +73,7 @@ public class FlightsService {
         final List<Flight> futureFlights = flightRepository.findByDepartureTimeBetweenDates(LocalDateTime.now(), LocalDateTime.now().plusDays(discountedFlightFutureDays));
 
         // pick random flights
-        final List<Flight> discountedFlights = futureFlights.stream()
+        return futureFlights.stream()
                 .collect(Collectors.collectingAndThen(Collectors.toList(), collected -> {
                     Collections.shuffle(collected);
                     return collected.stream();
@@ -75,11 +84,9 @@ public class FlightsService {
                     return flight;
                 })
                 .collect(Collectors.toList());
-
-        return discountedFlights;
     }
-    @Cacheable("flights")
-    @CachePut(value="flights")
+//    @Cacheable("flights")
+//    @CachePut(value="flights")
     public List<Flight> searchFlights(FlightsSearchRequest searchRequest) {
         Map<SearchType, Supplier<List<Flight>>> searchStrategies = new HashMap<>();
 
@@ -94,7 +101,14 @@ public class FlightsService {
                 searchRequest.getOrigin(),
                 searchRequest.getDestination())
         );
-
         return searchStrategies.get(searchRequest.getSearchType()).get();
+    }
+
+    public List<String> getUniqueDestinations() {
+        return flightRepository.findDistinctDestination();
+    }
+
+    public List<String> getUniqueOrigins() {
+        return flightRepository.findDistinctOrigin();
     }
 }

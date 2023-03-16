@@ -77,7 +77,7 @@ public class FlightsController {
             return new ResponseEntity<>(flights, HttpStatus.OK);
         }
 
-        LOGGER.trace("No flights found");
+        LOGGER.info("No flights found");
         return ResponseEntity.notFound().build();
     }
 
@@ -89,5 +89,25 @@ public class FlightsController {
 
         LOGGER.trace("Flight specials: {}", discountedFlights);
         return discountedFlights;
+    }
+
+    @GetMapping("/airports/destinations")
+    public List<String> getDestinations() {
+        LOGGER.info("Processing airports request");
+
+        List<String> airports = flightsService.getUniqueDestinations();
+
+        LOGGER.info("Airports: {}", airports);
+        return airports;
+    }
+
+    @GetMapping("/airports/origins")
+    public List<String> getOrigins() {
+        LOGGER.info("Processing airports request");
+
+        List<String> airports = flightsService.getUniqueOrigins();
+
+        LOGGER.info("Airports: {}", airports);
+        return airports;
     }
 }

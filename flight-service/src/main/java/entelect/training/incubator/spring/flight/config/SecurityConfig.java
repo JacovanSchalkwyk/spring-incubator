@@ -1,11 +1,13 @@
 package entelect.training.incubator.spring.flight.config;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.web.access.channel.ChannelProcessingFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -25,6 +27,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     //        auth.jdbcAuthentication().dataSource(securityDataSource);
     //    }
 
+    @Bean
+    public CorsFilter corsFilter() {
+        return new CorsFilter();
+    }
+
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.inMemoryAuthentication().withUser("user").password("{noop}the_cake").roles("USER");
@@ -34,6 +41,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable() // !!! Disclaimer: NEVER DISABLE CSRF IN PRODUCTION !!!
+                .addFilterBefore(corsFilter(), ChannelProcessingFilter.class)
                 .authorizeRequests()
                 .antMatchers(HttpMethod.GET, "/flights/specials").hasAnyRole("SYSTEM", "ADMIN",
                         "LOYALTY_USER")
@@ -45,5 +53,4 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .httpBasic();
     }
-
 }
