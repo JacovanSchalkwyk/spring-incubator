@@ -38,16 +38,29 @@ public class FlightsService {
         flight.setDepartureTime(LocalDateTime.now().plusDays(1));
         flight.setArrivalTime(LocalDateTime.now().plusDays(1).plusHours(2));
         flight.setOrigin("JNB");
+        flight.setFlightNumber("SA123");
         flight.setDestination("CPT");
         flight.setSeatsAvailable(4);
         flight.setSeatCost(1000.00f);
         flightRepository.save(flight);
+
+        flight = new Flight();
+        flight.setDepartureTime(LocalDateTime.now().plusDays(1));
+        flight.setArrivalTime(LocalDateTime.now().plusDays(1).plusHours(2));
+        flight.setOrigin("JNB");
+        flight.setFlightNumber("SA125");
+        flight.setDestination("CPT");
+        flight.setSeatsAvailable(2);
+        flight.setSeatCost(100.00f);
+        flightRepository.save(flight);
+
         flight = new Flight();
         flight.setDepartureTime(LocalDateTime.now().plusDays(1));
         flight.setArrivalTime(LocalDateTime.now().plusDays(1).plusHours(2));
         flight.setOrigin("CPT");
         flight.setDestination("JNB");
         flight.setSeatsAvailable(5);
+        flight.setFlightNumber("SA124");
         flight.setSeatCost(1000.00f);
         flightRepository.save(flight);
     }
